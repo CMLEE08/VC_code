@@ -11,21 +11,11 @@ public class BullSupply : MonoBehaviour
     public int BBint = 0;
     public int FBint = 0;
 
-
-
-
-    public GameObject bulletBack;
-    public GameObject bulletVirus;
-    public GameObject bulletFungus;
-
     public KeyPressG keyPressG;
     public AmmoManage ammoManage;
 
-
     void Start()
     {
-
-
         Vtext.text = "0";
         Btext.text = "0";
         Ftext.text = "0";
@@ -48,20 +38,19 @@ public class BullSupply : MonoBehaviour
     public void DemonsIFbullet()                            //bool 값을 거짓으로 변경 후에 CurrentBull 속성에 따라 값 +5
     {
         keyPressG.BullSupp = false;
- 
-        if (ammoManage.NowBull == bulletBack)       
+
+        if (ammoManage.NowBull == ammoManage.Bullets[1])       
         {
             BBint = BBint + 5;
 
         }
-        else if (ammoManage.NowBull == bulletVirus)
+        else if (ammoManage.NowBull == ammoManage.Bullets[0])
         {
             VBint = VBint + 5;
         }
-        else if (ammoManage.NowBull == bulletFungus)
+        else if (ammoManage.NowBull == ammoManage.Bullets[2])
         {
             FBint = FBint + 5;
         }
     }
-
 }

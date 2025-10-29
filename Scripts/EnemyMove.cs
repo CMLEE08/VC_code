@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using System.Linq.Expressions;
 
-
 public class EnemyMove : MonoBehaviour
 {
     public int Mod = 0;
@@ -49,10 +48,10 @@ public class EnemyMove : MonoBehaviour
     }
     void OnTriggerEnter2D(Collider2D other)
     {
-        
+
         if (other.CompareTag("BullV") || other.CompareTag("BullB") || other.CompareTag("BullF"))               //Change bull require
         {
-            
+
             if (Mod == 1)
             {
                 if (other.CompareTag("BullV"))

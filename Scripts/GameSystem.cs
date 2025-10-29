@@ -11,18 +11,9 @@ public class GameSystem : MonoBehaviour
     public int PlayerMod = 1;
     public float SpawnTime = 2.5f;
     public int PlayerHPs = 2;
-    public GameObject PS_B;
-    public GameObject PS_A;
-
 
     void Start()
     {
-
-        
-
-        PS_B.SetActive(true);
-        PS_A.SetActive(false);
-        
         if (GameManager.Instance.Difficulty == "Hard")
         {
 
@@ -31,11 +22,9 @@ public class GameSystem : MonoBehaviour
             HP_List[PlayerHPs].SetActive(false);
             PlayerHPs = PlayerHPs - 1;
 
-
         }
-    
-        InvokeRepeating("SpawnE", 3f, SpawnTime);
 
+        InvokeRepeating("SpawnE", 3f, SpawnTime);
 
     }
     // Update is called once per frame

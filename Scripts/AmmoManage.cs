@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-
 public class AmmoManage : MonoBehaviour
 {
     public GameObject CurrentBull = null;
@@ -11,59 +10,69 @@ public class AmmoManage : MonoBehaviour
 
     public Transform firePoint;
 
+    public List<GameObject> Bullets;                  //V,B,F
 
-    public GameObject bulletBack;
-    public GameObject bulletVirus;
-    public GameObject bulletFungus;
-
+    public int BulletIndex = 0;
 
     [Header("Object Script")]
     public KeyPressG KeyPressG;
 
     public BullSupply bullSupply;
-    
-
-
-
-
-
 
     void Start()
     {
-        CurrentBull = bulletVirus;
-
-
+        CurrentBull = Bullets[BulletIndex];
     }
-    // Update is called once per frame
-    void Update()
+    void Update()                    // Update is called once per frame
     {
-        BullChange(KeyCode.I, bulletVirus);
-        BullChange(KeyCode.O, bulletBack);
-        BullChange(KeyCode.P, bulletFungus);         //change Bull
+        BullChange();         //change Bull
 
         if (Input.GetKeyDown(KeyCode.Space))
             Shoot();
-
-
     }
 
-    void BullChange(KeyCode key, GameObject bullet)
+    void BullChange()
     {
-        if (Input.GetKeyDown(key))
+
+        if (Input.GetKeyDown(KeyCode.I)) 
         {
-            if (CurrentBull == bullet)
+            if (BulletIndex == 0)
             {
-                if (!KeyPressG.isQTEActive)                //yield break while process
-                {
-                    NowBull = CurrentBull;
-                    StartCoroutine(KeyPressG.GenSQ(5));
-                    StartCoroutine(KeyPressG.InputSQ());
-                }
+                BulletIndex = 2;
+                CurrentBull = Bullets[BulletIndex];
             }
             else
             {
-                CurrentBull = bullet;
-                Debug.Log($"{key} 버튼 총알 선택됨");
+                BulletIndex = BulletIndex - 1;
+                CurrentBull = Bullets[BulletIndex];
+            }
+         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            if (BulletIndex == 2)
+            {
+                BulletIndex = 0;
+                CurrentBull = Bullets[BulletIndex];
+            }
+            else
+            {
+                BulletIndex = BulletIndex + 1;
+                CurrentBull = Bullets[BulletIndex];
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            if (!KeyPressG.isQTEActive)
+            {            
+                NowBull = CurrentBull;
+                StartCoroutine(KeyPressG.GenSQ(5));                 //yield break while process   
+                StartCoroutine(KeyPressG.InputSQ());
+            }
+            else
+            {
+                Debug.Log("KeyPressG 실행 중");
             }
         }
     }
@@ -73,9 +82,9 @@ public class AmmoManage : MonoBehaviour
         compareMod();        
     }
 
-    public void compareMod()                                                        //이거 뭐라는겨
+    public void compareMod()                                                        //리스트에 해당하는 int 값이 0일시 else
     {
-        if (CurrentBull == bulletBack)
+        if (CurrentBull == Bullets[1])
         {
             if (bullSupply.BBint != 0)
             {
@@ -84,10 +93,10 @@ public class AmmoManage : MonoBehaviour
             }
             else
             {
-                Debug.Log("총알이 없는디?");
+                Debug.Log("It's 0!");
             }
         }
-        else if (CurrentBull == bulletVirus)
+        else if (CurrentBull == Bullets[0])
         {
             if (bullSupply.VBint != 0)
             {
@@ -96,10 +105,10 @@ public class AmmoManage : MonoBehaviour
             }
             else
             {
-                Debug.Log("총알이 없는디?");
+                Debug.Log("It's 0!");
             }
         }
-        else if (CurrentBull == bulletFungus)
+        else if (CurrentBull == Bullets[2])
         {
             if (bullSupply.FBint != 0)
             {
@@ -108,9 +117,8 @@ public class AmmoManage : MonoBehaviour
             }
             else
             {
-                Debug.Log("총알이 없는디?");                
+                Debug.Log("It's 0!");                
             }
         }
     }
 }
-
