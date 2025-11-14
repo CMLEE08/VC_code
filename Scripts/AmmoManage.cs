@@ -14,61 +14,44 @@ public class AmmoManage : MonoBehaviour
 
     public int BulletIndex = 0;
 
+    public int randomO = 1;
+
+    public bool isQTEActive = false;
+
     [Header("Object Script")]
     public KeyPressG KeyPressG;
 
+    public KeyPressM KeyPressM;
+
     public BullSupply bullSupply;
+
+    public SlideWeapon slideWeapon;
 
     void Start()
     {
-        CurrentBull = Bullets[BulletIndex];
+        CurrentBull = Bullets[0];
     }
     void Update()                    // Update is called once per frame
     {
-        BullChange();         //change Bull
+        SupB();
 
         if (Input.GetKeyDown(KeyCode.Space))
             Shoot();
     }
 
-    void BullChange()
+    void SupB()
     {
+        if (slideWeapon.isDot) return;
+        if (slideWeapon.isSeting) return;
 
-        if (Input.GetKeyDown(KeyCode.I)) 
-        {
-            if (BulletIndex == 0)
-            {
-                BulletIndex = 2;
-                CurrentBull = Bullets[BulletIndex];
-            }
-            else
-            {
-                BulletIndex = BulletIndex - 1;
-                CurrentBull = Bullets[BulletIndex];
-            }
-         }
 
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            if (BulletIndex == 2)
-            {
-                BulletIndex = 0;
-                CurrentBull = Bullets[BulletIndex];
-            }
-            else
-            {
-                BulletIndex = BulletIndex + 1;
-                CurrentBull = Bullets[BulletIndex];
-            }
-        }
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-            if (!KeyPressG.isQTEActive)
-            {            
+            if (!isQTEActive)
+            {
                 NowBull = CurrentBull;
-                StartCoroutine(KeyPressG.GenSQ(5));                 //yield break while process   
-                StartCoroutine(KeyPressG.InputSQ());
+                ActiveO();
             }
             else
             {
@@ -117,8 +100,38 @@ public class AmmoManage : MonoBehaviour
             }
             else
             {
-                Debug.Log("It's 0!");                
+                Debug.Log("It's 0!");
             }
+        }
+    }
+
+    public void ActiveO()
+    {
+        randomO = Random.Range(0, 100);
+        if (randomO < 60)
+        {
+            StartCoroutine(KeyPressG.GenSQ(5));
+            StartCoroutine(KeyPressG.InputSQ());
+        }
+        else
+        {
+            KeyPressM.StartMP();
+        }
+    }
+    
+    public void CheckBull()
+    {
+        switch (slideWeapon.bullindex)
+        {
+            case 0:
+                CurrentBull = Bullets[0];
+                break;
+            case 1:
+                CurrentBull = Bullets[1];
+                break;
+            case 2:
+                CurrentBull = Bullets[2];
+                break;
         }
     }
 }

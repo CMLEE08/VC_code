@@ -1,98 +1,93 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
-using System.Linq.Expressions;
 
 public class EnemyMove : MonoBehaviour
 {
-    public int Mod = 0;
-    public float speed = 2f;       
+    public int Mod = 0;                 
+    public float moveStep = 0.5f;       
+    public float moveDelay = 0.2f;   
+
+    private float Health = 1f;         
+    [SerializeField] private Image HealthBar;
+    [SerializeField] private Image HealthBack;
+
     private Transform target;
-    public GameObject VB;
-    public GameObject BB;
-    public GameObject FB;
     public Debugging Compare;
+
+    private bool isMoving = false;     
 
     void Start()
     {
-        if (this.CompareTag("Virus"))
-        {
-            Mod = 1;
-            speed = 3f;   
-        }
+        HealthBar.enabled = false;     
+        HealthBack.enabled = false;
 
-        if (this.CompareTag("Fungus"))           //To compare with Bull
-        {
-            Mod = 2;
-        }
-        if (this.CompareTag("Backteria"))
-        {
-            Mod = 3;
-        }
+        // 적 타입 설정
+        if (CompareTag("Virus")) { Mod = 1; moveStep = 0.6f; }
+        if (CompareTag("Fungus")) { Mod = 2; }
+        if (CompareTag("Backteria")) { Mod = 3; }
 
-        GameObject player = GameObject.FindGameObjectWithTag("Finish");           //direction player?
-        if (player != null)
-        {
-            target = player.transform;
-        }
+        GameObject player = GameObject.FindGameObjectWithTag("Finish");
+        if (player != null) target = player.transform;
     }
 
     void Update()
     {
-        if (target == null) return;
+        if (!isMoving && target != null)
+        {
+            StartCoroutine(MoveStep());
+        }
+    }
+
+    IEnumerator MoveStep()
+    {
+        isMoving = true;
 
         Vector3 direction = (target.position - transform.position).normalized;
-        transform.position += direction * speed * Time.deltaTime;
+        transform.position += direction * moveStep;
+
+        yield return new WaitForSeconds(moveDelay);
+
+        isMoving = false;
     }
+
     void OnTriggerEnter2D(Collider2D other)
     {
-
-        if (other.CompareTag("BullV") || other.CompareTag("BullB") || other.CompareTag("BullF"))               //Change bull require
+        if (other.CompareTag("BullV") || other.CompareTag("BullB") || other.CompareTag("BullF"))
         {
-
-            if (Mod == 1)
+            if (IsBullEffective(other.tag))
             {
-                if (other.CompareTag("BullV"))
-                {
-                    Destroy(this.gameObject);
-                    Destroy(other.gameObject);
-                    Compare.XB = true;
-                }
-                else
-                {
-                    Destroy(other.gameObject);
-                }          
-
-            }
-            else if (Mod == 2)
-            {
-                if (other.CompareTag("BullF"))
-                {
-                    Destroy(this.gameObject);
-                    Destroy(other.gameObject);
-                    Compare.XB = true;
-                }
-                else
-                {
-                    Destroy(other.gameObject);
-                }          
-            }
-            else if (Mod == 3)
-            {
-                if (other.CompareTag("BullB"))
-                {
-                    Destroy(this.gameObject);
-                    Destroy(other.gameObject);
-                    Compare.XB = true;
-                }
-                else
-                {
-                    Destroy(other.gameObject);
-                }             
+                EnableHealthBar();
+                HealthCheck();
+                Compare.XB = true;
             }
 
+            Destroy(other.gameObject);
+        }
+    }
+
+    bool IsBullEffective(string bullTag)
+    {
+        return (Mod == 1 && bullTag == "BullV") ||
+               (Mod == 2 && bullTag == "BullF") ||
+               (Mod == 3 && bullTag == "BullB");
+    }
+
+    void EnableHealthBar()
+    {
+        if (!HealthBar.enabled)
+            HealthBar.enabled = true;
+            HealthBack.enabled = true;
+    }
+
+    void HealthCheck()
+    {
+        Health -= 0.5f;
+        HealthBar.fillAmount = Health;
+
+        if (Health <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 }

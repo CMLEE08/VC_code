@@ -20,9 +20,9 @@ public class KeyPressG : MonoBehaviour
     public Sprite LeftAr;
     public Sprite RightAr;
 
-    [Header("Bools")]
-    public bool isQTEActive = false;
-    public bool BullSupp = false;
+    [Header("Arrow Sprites")]
+    public BullSupply bullSupply;
+    public AmmoManage ammoManage;
 
 
 
@@ -59,8 +59,8 @@ public class KeyPressG : MonoBehaviour
                     {
                         Debug.Log("모든 퍼즐 성공");
                         ArrowObject.Clear();
-                        isQTEActive = false;
-                        BullSupp = true;
+                        ammoManage.isQTEActive = false;
+                        bullSupply.BullSupp = true;
                         PanelTF.SetActive(false);
 
 
@@ -73,7 +73,7 @@ public class KeyPressG : MonoBehaviour
                 {
                     Debug.Log("퍼즐 실패");
                     clearAll();
-                    isQTEActive = false;
+                    ammoManage.isQTEActive = false;
                     PanelTF.SetActive(false);
                     
                     yield break;
@@ -88,8 +88,8 @@ public class KeyPressG : MonoBehaviour
 
     public IEnumerator GenSQ(int count)                  //select SQ                   
     {
-        if (isQTEActive) yield break;
-        isQTEActive = true;
+        if (ammoManage.isQTEActive) yield break;
+        ammoManage.isQTEActive = true;
 
         PanelTF.SetActive(true);
         ArrowList.Clear();
