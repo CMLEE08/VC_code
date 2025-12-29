@@ -4,18 +4,21 @@ using UnityEngine.UI;
 
 public class BullSupply : MonoBehaviour
 {
+    [Header("Text_UI")]
     public Text Vtext;
     public Text Btext;
     public Text Ftext;
+    public Text BullT;
 
+    [Header("References")]
     public int VBint = 55;
     public int BBint = 55;
     public int FBint = 55;
 
-    public Text BullT;
-
+    [Header("bool")]
     public bool BullSupp = false;
-
+    
+    [Header("Other Scripts")]
     public KeyPressG keyPressG;
     public AmmoManage ammoManage;
 
@@ -35,7 +38,7 @@ public class BullSupply : MonoBehaviour
 
         if (BullSupp == true)                        //keyPressG에 있는 BullSupp bool 값을 가져옴
         {
-            Debug.Log("탄약 충전");
+            Debug.Log("Reload");
             DemonsIFbullet();
 
         }

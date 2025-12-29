@@ -14,7 +14,7 @@ public class BulletMove : MonoBehaviour
             Vector2 direction = (player.transform.position - transform.position).normalized;
             MDirect = direction;
 
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;                //find BullSight and move
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;                // To BullSight
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
     }

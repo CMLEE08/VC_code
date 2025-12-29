@@ -60,7 +60,7 @@ public class FadeManager : MonoBehaviour
 
         while (time < fadeDuration)
         {
-            float t = time / fadeDuration;              // 계산식이 어떻게 작동하는거지?
+            float t = time / fadeDuration;              // ?????
             c.a = Mathf.Lerp(from, to, t);
             fadeImage.color = c;
 

@@ -15,14 +15,15 @@ public class EnemyMove : MonoBehaviour
     private Transform target;
     public Debugging Compare;
 
-    private bool isMoving = false;     
+    private bool isMoving = false; 
+
+    public GameSystem gameSystem;    
 
     void Start()
     {
         HealthBar.enabled = false;     
         HealthBack.enabled = false;
 
-        // 적 타입 설정
         if (CompareTag("Virus")) { Mod = 1; moveStep = 0.6f; }
         if (CompareTag("Fungus")) { Mod = 2; }
         if (CompareTag("Backteria")) { Mod = 3; }
@@ -57,7 +58,7 @@ public class EnemyMove : MonoBehaviour
         {
             if (IsBullEffective(other.tag))
             {
-                EnableHealthBar();
+                EnHealthBar();
                 HealthCheck();
                 Compare.XB = true;
             }
@@ -73,7 +74,7 @@ public class EnemyMove : MonoBehaviour
                (Mod == 3 && bullTag == "BullB");
     }
 
-    void EnableHealthBar()
+    void EnHealthBar()
     {
         if (!HealthBar.enabled)
             HealthBar.enabled = true;
@@ -87,6 +88,20 @@ public class EnemyMove : MonoBehaviour
 
         if (Health <= 0)
         {
+            gameSystem.KCount += 1;
+
+            switch (Mod)
+            {
+                case 1:
+                    gameSystem.Vkill += 1;
+                    break;
+                case 2:
+                    gameSystem.Fkill += 1;
+                    break;
+                case 3:
+                    gameSystem.Bkill += 1;
+                    break;
+            }
             Destroy(gameObject);
         }
     }

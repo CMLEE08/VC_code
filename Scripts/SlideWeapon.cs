@@ -7,8 +7,8 @@ using System.Collections;
 public class SlideWeapon : MonoBehaviour
 {
     [Header("Slots & Images")]
-    public List<RectTransform> slots;   // 6개의 슬롯
-    public List<Image> images;          // 6개의 이미지 (A,B,C × 2)
+    public List<RectTransform> slots;   // 6개
+    public List<Image> images;         
 
     [Header("Animation Settings")]
 
@@ -50,7 +50,7 @@ public class SlideWeapon : MonoBehaviour
             imageGroups[i] = cg;
         }
 
-        RefreshCarousel(true);
+        RefreshC(true);
     }
 
     void Update()
@@ -69,8 +69,7 @@ public class SlideWeapon : MonoBehaviour
         }
     }
 
-    // 오른쪽으로 이동
-    void ShiftRight()
+    void ShiftRight()                       // DotWeen 에셋 사용
     {
         isDot = true;
         for (int i = 0; i < images.Count; i++)
@@ -80,13 +79,11 @@ public class SlideWeapon : MonoBehaviour
             Image img = images[i];
             CanvasGroup cg = imageGroups[i];
 
-            // 이동 + 크기 변화 + 투명도 변화 동시에
             img.rectTransform.DOAnchorPos(slots[nextSlotIndex].anchoredPosition, duration).SetEase(Ease.OutQuad);
             img.rectTransform.DOSizeDelta(GetTargetSize(nextSlotIndex), duration).SetEase(Ease.OutQuad);
             cg.DOFade(GetTargetAlpha(nextSlotIndex), duration).SetEase(Ease.OutQuad);
         }
 
-        // 리스트 순서 재배열만 나중에 수행
         DOVirtual.DelayedCall(duration, () =>
         {
             Image firstImg = images[0];
@@ -105,7 +102,6 @@ public class SlideWeapon : MonoBehaviour
         });
     }
 
-    // 왼쪽으로 이동
     void ShiftLeft()
     {
         isDot = true;
@@ -116,13 +112,11 @@ public class SlideWeapon : MonoBehaviour
             Image img = images[i];
             CanvasGroup cg = imageGroups[i];
 
-            // 이동 + 크기 변화 + 투명도 변화 동시에
             img.rectTransform.DOAnchorPos(slots[nextSlotIndex].anchoredPosition, duration).SetEase(Ease.OutQuad);
             img.rectTransform.DOSizeDelta(GetTargetSize(nextSlotIndex), duration).SetEase(Ease.OutQuad);
             cg.DOFade(GetTargetAlpha(nextSlotIndex), duration).SetEase(Ease.OutQuad);
         }
 
-        // 리스트 순서 재배열만 나중에 수행
         DOVirtual.DelayedCall(duration, () =>
         {
             Image lastImg = images[images.Count - 1];
@@ -141,8 +135,7 @@ public class SlideWeapon : MonoBehaviour
         });
     }
 
-    // 현재 슬롯 상태 반영
-    void RefreshCarousel(bool instant)
+    void RefreshC(bool instant)
     {
         for (int slotIndex = 0; slotIndex < slots.Count; slotIndex++)
         {
@@ -167,13 +160,11 @@ public class SlideWeapon : MonoBehaviour
         }
     }
 
-    // 슬롯 위치별 크기 반환
     Vector2 GetTargetSize(int slotIndex)
     {
         return slotIndex == 2 ? centerSize : sideSize;
     }
 
-    // 슬롯 위치별 투명도 반환
     float GetTargetAlpha(int slotIndex)
     {
         if (slotIndex == 2) return 1f;
@@ -181,8 +172,10 @@ public class SlideWeapon : MonoBehaviour
         return sideAlpha;
     }
 
-    IEnumerator StartDot()
+    IEnumerator StartDot()                              // 키 입력 감지
     {
+        yield return new WaitForSeconds(0.01f);
+
         while (isSeting)
         {
             if (Input.GetKeyDown(KeyCode.P))
@@ -211,6 +204,7 @@ public class SlideWeapon : MonoBehaviour
 
             else if (Input.GetKeyDown(KeyCode.O))
             {
+                ammoManage.BulletIndex = bullindex;
                 ammoManage.CheckBull();
                 debugging.BullCheck();
                 anim.Play("WeaponS");

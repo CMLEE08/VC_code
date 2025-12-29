@@ -1,10 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using System.Collections;
-using Unity.VisualScripting;
-using UnityEditor.Overlays;
-using JetBrains.Annotations;
+
 
 public class KeyPressM : MonoBehaviour
 {
@@ -25,6 +22,8 @@ public class KeyPressM : MonoBehaviour
     [Header("Other Scrpt")]
     public AmmoManage ammoManage;
     public BullSupply bullSupply;
+
+    public GameSystem gameSystem;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -87,6 +86,14 @@ public class KeyPressM : MonoBehaviour
 
     public void inputAnswer()
     {
+        if (ammoManage.isTime == false)
+        {
+            ammoManage.Times.SetActive(false);
+            ammoManage.isQTEActive = false;
+            gameSystem.InCorrectC += 1;
+            Time.timeScale = 1f;
+            ClearM();
+        }
 
         foreach (char c in Input.inputString)
         {
@@ -95,13 +102,13 @@ public class KeyPressM : MonoBehaviour
                 NowInput += c;
                 UpdateUI();
             }
-            else if (c == '\b') // 백스페이스
+            else if (c == '\b')                                 //Backspace
             {
                 if (NowInput.Length > 0)
                     NowInput = NowInput.Substring(0, NowInput.Length - 1);
                 UpdateUI();
             }
-            else if (c == '\r') // 엔터
+            else if (c == '\r')                                 //Enter
             {
                 CheckA();
             }
@@ -115,15 +122,21 @@ public class KeyPressM : MonoBehaviour
         {
             if (userAnswer == answerM)
             {
+                ammoManage.Times.SetActive(false);
                 Debug.Log("Correct");
                 bullSupply.BullSupp = true;
                 ammoManage.isQTEActive = false;
+                gameSystem.CorrectC += 1;
+                Time.timeScale = 1f;
                 ClearM();
             }
             else
             {
+                ammoManage.Times.SetActive(false);
                 Debug.Log("Answer Incorrect");
                 ammoManage.isQTEActive = false;
+                gameSystem.InCorrectC += 1;
+                Time.timeScale = 1f;
                 ClearM();
             }
         }

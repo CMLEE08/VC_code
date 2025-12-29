@@ -4,31 +4,34 @@ using System.Collections.Generic;
 
 public class AmmoManage : MonoBehaviour
 {
+    [Header("GameObjects")]
     public GameObject CurrentBull = null;
-
     public GameObject NowBull = null;
-
+    public GameObject Times;
     public Transform firePoint;
 
+    [Header("List")]
     public List<GameObject> Bullets;                  //V,B,F
 
+    [Header("References")]
     public int BulletIndex = 0;
-
     public int randomO = 1;
 
+    [Header("bools")]
+    public bool isTime = false;
     public bool isQTEActive = false;
 
     [Header("Object Script")]
     public KeyPressG KeyPressG;
-
     public KeyPressM KeyPressM;
-
     public BullSupply bullSupply;
-
     public SlideWeapon slideWeapon;
+    public GameSystem gameSystem;
+    
 
     void Start()
     {
+        Times.SetActive(false);
         CurrentBull = Bullets[0];
     }
     void Update()                    // Update is called once per frame
@@ -107,6 +110,11 @@ public class AmmoManage : MonoBehaviour
 
     public void ActiveO()
     {
+        isTime = true;
+        Times.SetActive(true);
+        gameSystem.PuzzleT = true;
+        gameSystem.currentTime = 6f;
+        Time.timeScale = 0.6f;
         randomO = Random.Range(0, 100);
         if (randomO < 60)
         {

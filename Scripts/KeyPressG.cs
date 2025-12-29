@@ -2,9 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
-using Unity.VisualScripting;
-using UnityEditor.Overlays;
-using JetBrains.Annotations;
 
 public class KeyPressG : MonoBehaviour
 {
@@ -23,7 +20,7 @@ public class KeyPressG : MonoBehaviour
     [Header("Arrow Sprites")]
     public BullSupply bullSupply;
     public AmmoManage ammoManage;
-
+    public GameSystem gameSystem;
 
 
 
@@ -37,16 +34,25 @@ public class KeyPressG : MonoBehaviour
     }
 
 
-    public IEnumerator InputSQ()                                  //Puzzle Process and Result
+    public IEnumerator InputSQ()                                  // QTE 실행
     {
-
-
 
         while (ArrowList.Count > 0)
         {
+            if (ammoManage.isTime == false)
+            {
+                Debug.Log("퍼즐 실패");
+                ammoManage.Times.SetActive(false);
+                clearAll();
+                ammoManage.isQTEActive = false;
+                PanelTF.SetActive(false);
+                gameSystem.InCorrectC += 1;
+                Time.timeScale = 1f;
+                yield break;
+            }
             if (Input.GetKeyDown(KeyCode.DownArrow) ||
                 Input.GetKeyDown(KeyCode.UpArrow) ||
-                Input.GetKeyDown(KeyCode.LeftArrow) ||         //Compare with player pressed
+                Input.GetKeyDown(KeyCode.LeftArrow) ||         //플레이어 키 입력
                 Input.GetKeyDown(KeyCode.RightArrow))
             {
                 if (Input.GetKeyDown(ArrowList[0]))
@@ -58,10 +64,14 @@ public class KeyPressG : MonoBehaviour
                     if (ArrowList.Count == 0)
                     {
                         Debug.Log("모든 퍼즐 성공");
+                        ammoManage.Times.SetActive(false);
                         ArrowObject.Clear();
                         ammoManage.isQTEActive = false;
                         bullSupply.BullSupp = true;
                         PanelTF.SetActive(false);
+                        gameSystem.CorrectC += 1;
+                        Time.timeScale = 1f;
+                        
 
 
                         yield break;
@@ -72,10 +82,12 @@ public class KeyPressG : MonoBehaviour
                 else
                 {
                     Debug.Log("퍼즐 실패");
+                    ammoManage.Times.SetActive(false);
                     clearAll();
                     ammoManage.isQTEActive = false;
                     PanelTF.SetActive(false);
-                    
+                    gameSystem.InCorrectC += 1;
+                    Time.timeScale = 1f;
                     yield break;
 
 
@@ -86,7 +98,7 @@ public class KeyPressG : MonoBehaviour
         }
     }
 
-    public IEnumerator GenSQ(int count)                  //select SQ                   
+    public IEnumerator GenSQ(int count)                  //SQ 선택                   
     {
         if (ammoManage.isQTEActive) yield break;
         ammoManage.isQTEActive = true;
@@ -106,7 +118,7 @@ public class KeyPressG : MonoBehaviour
             {
                 case 0: key = KeyCode.UpArrow; chosenSprite = UpAr; break;
                 case 1: key = KeyCode.DownArrow; chosenSprite = DownAr; break;
-                case 2: key = KeyCode.LeftArrow; chosenSprite = LeftAr; break;           //Selected list ㅡ> Sprite List
+                case 2: key = KeyCode.LeftArrow; chosenSprite = LeftAr; break;           //리스트를 케이스를 통해 이미지로 변환
                 case 3: key = KeyCode.RightArrow; chosenSprite = RightAr; break;
             }
 
@@ -114,7 +126,7 @@ public class KeyPressG : MonoBehaviour
 
             GameObject arrow = Instantiate(ArPre, arrowPanel);
 
-            RectTransform rt = arrow.GetComponent<RectTransform>();      //chosen RectTransform arrange
+            RectTransform rt = arrow.GetComponent<RectTransform>();     
             rt.localPosition = Vector3.zero;
             rt.localScale = Vector3.one;
 
@@ -125,12 +137,12 @@ public class KeyPressG : MonoBehaviour
             yield return null;
 
         }
-        arrowPanel.GetComponent<HorizontalLayoutGroup>().enabled = false;   //Horizon unable
+        arrowPanel.GetComponent<HorizontalLayoutGroup>().enabled = false; 
     }
 
     public void clearAll()
     {
-        foreach (var arrow in ArrowObject)       //Clear all List and Sprite 
+        foreach (var arrow in ArrowObject)       //초기화
         {
             Destroy(arrow);
         }
